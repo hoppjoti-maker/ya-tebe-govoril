@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Яж тебе говорил</title>
+    <meta name="description" content="Детская сказка в рифме: Кристине почти сорок четыре, стул подскользнулся, доктор Ахмед наложил гипс." />
+    <meta property="og:title" content="Яж тебе говорил" />
+    <meta property="og:description" content="Сказка про Кристину, стул и гипс." />
+    <meta property="og:image" content="og.jpg" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Neucha&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --paper: #f6ecd4;
+        --paper-deep: #ead9b2;
+        --ink: #2c2118;
+        --ink-soft: #4a3728;
+        --brick: #b3392b;
+        --wood: #2a1a12;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100dvh; background: var(--wood); color: var(--ink); }
+      body {
+        font-family: Literata, "Iowan Old Style", Palatino, serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px;
+      }
+      .wrap { width: min(42rem, 100%); display: flex; flex-direction: column; min-height: calc(100dvh - 24px); }
+      header, nav { color: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      header { margin-bottom: 12px; }
+      .title { font-family: Neucha, sans-serif; font-size: 1.15rem; margin: 0; }
+      button {
+        font: inherit;
+        border: 0;
+        cursor: pointer;
+        min-height: 44px;
+        min-width: 44px;
+        border-radius: 12px;
+        background: var(--paper-deep);
+        color: var(--ink);
+        box-shadow: 0 8px 24px rgb(26 16 12 / 0.28);
+      }
+      button:disabled { opacity: 0.4; cursor: default; }
+      button.ghost { background: transparent; color: var(--paper); box-shadow: none; }
+      button.brick { background: var(--brick); color: var(--paper); }
+      .book {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 20px;
+        background: var(--paper);
+        box-shadow: 0 8px 24px rgb(26 16 12 / 0.28);
+      }
+      .spine { position: absolute; inset: 0 auto 0 0; width: 10px; background: linear-gradient(90deg, #6b1f18, #b3392b 60%, #8e2c21); z-index: 2; }
+      .page { height: 100%; display: flex; flex-direction: column; overflow: auto; }
+      .page img { width: 100%; height: 40vh; min-height: 180px; max-height: 380px; object-fit: cover; object-position: center 18%; display: block; }
+      .verse { padding: 18px 22px 28px; }
+      .kicker { font-family: Neucha, sans-serif; letter-spacing: 0.18em; font-size: 0.75rem; color: var(--brick); margin: 0; }
+      h1, h2 { font-family: Neucha, sans-serif; margin: 6px 0 0; line-height: 1.15; }
+      h1 { font-size: clamp(2rem, 6vw, 3.2rem); color: var(--paper); }
+      h2 { font-size: 1.5rem; }
+      .lines p { margin: 0; line-height: 1.45; color: var(--ink-soft); }
+      .cover { position: relative; min-height: 100%; color: var(--paper); }
+      .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
+      .cover .shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(44 33 24 / 0.1), transparent 40%, rgb(44 33 24 / 0.78)); }
+      .cover .copy { position: relative; margin-top: auto; padding: 28px 24px 32px; text-align: center; }
+      .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+      nav { margin-top: 12px; }
+      .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgb(44 33 24 / 0.1); }
+      .bar > i { display: block; height: 100%; background: var(--brick); width: 0; }
+      dialog { border: 0; border-radius: 20px; background: var(--paper); padding: 20px; width: min(28rem, 92vw); }
+      dialog::backdrop { background: rgb(44 33 24 / 0.5); }
+      dialog button.row { display: flex; width: 100%; justify-content: space-between; background: transparent; box-shadow: none; text-align: left; font-family: Neucha, sans-serif; font-size: 1.1rem; }
+      dialog button.row.on { background: var(--brick); color: var(--paper); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <p class="title">Яж тебе говорил</p>
+        <div>
+          <button class="ghost" id="play" type="button" aria-label="Слушать">▶</button>
+          <button class="ghost" id="tocBtn" type="button" aria-label="Оглавление">☰</button>
+        </div>
+      </header>
+      <section class="book" id="book">
+        <div class="spine"></div>
+        <div class="page" id="page"></div>
+        <div class="bar"><i id="prog"></i></div>
+      </section>
+      <nav>
+        <button id="prev" type="button" aria-label="Назад">‹</button>
+        <p id="label" class="title" style="color:#ead9b2;font-size:.95rem"></p>
+        <button id="next" type="button" aria-label="Вперёд">›</button>
+      </nav>
+    </div>
+    <dialog id="toc">
+      <p class="kicker">ОГЛАВЛЕНИЕ</p>
+      <h2>Яж тебе говорил</h2>
+      <div id="tocList"></div>
+    </dialog>
+    <audio id="audio" preload="auto" playsinline></audio>
+    <script>
+      const chapters = [
+        { n:1, title:"Вот какая Кристина", image:"book/g1.jpg", audio:"book/audio/ch1.mp3",
+          lines:["Жила-была девчонка,","Звали её Кристина.","Кепочка на кудрях,","Улыбка — прямо до ушей.","Лет ей почти что сорок четыре,","А прыгает — будто в четыре!","Друг её Лёша сказал:","«Кристина, потише, смотри!»","А она: «Ну что ты, Лёша,","Я ж цирк у себя во дворе!»"] },
+        { n:2, title:"Ай-ай, пить нехорошо", image:"book/g2.jpg", audio:"book/audio/ch2.mp3",
+          lines:["Села Кристина за стол —","Чок! и капелька в рот.","«Ай-ай, — сказал ей Лёша, —","Пить нехорошо, вот-вот!»","А она на стул — царица:","«Прыгну — и цирк начнётся сейчас!»","Лёша руками замахал:","«Яж тебе говорил: не надо!","Сорок четыре — не четыре,","Со стула летать опасно в мире!»"] },
+        { n:3, title:"Бах!", image:"book/g3.jpg", audio:"book/audio/ch3.mp3",
+          lines:["Прыгнула Кристина — раз!","Стул подскользнулся — два!","Полетела девчонка на пол со стука,","Ручка хрустнула: «Ай-ай-ай!»","Стул убежал в дальний уголок:","«Я не виноват, честное слово!»","А Кристина сидит и думает:","«Ну и цирк получился… кривой.»"] },
+        { n:4, title:"Не хочу!", image:"book/g4.jpg", audio:"book/audio/ch4.mp3",
+          lines:["Лёша сказал: «В больницу, живо!","Там доктор Ахмед посмотрит косточку.»","Кристина надула губки:","«Не хочу! Это долгого очень!","Дорога далёкая, очередь злая,","Гипс белый — ну его к лешему!»","Лёша вздохнул: «Яж тебе говорил…","Поехали, Кристина. Без шуток.»"] },
+        { n:5, title:"Ехали-ехали", image:"book/g5.jpg", audio:"book/audio/ch5.mp3",
+          lines:["Ехали, ехали в белом такси,","Кристина ворчала на всём пути:","«Долго, Лёша, как до Луны!","Может, домой? Ручка заживёт сама!»","Лёша молчал, только бровью повёл:","«Яж тебе говорил. Сиди, не реви.»","А ручка ныла, ныла и ныла —","И в больницу сама попросила."] },
+        { n:6, title:"Гипс от Ахмеда", image:"book/g6.jpg", audio:"book/audio/ch6.mp3",
+          lines:["Доктор Ахмед — мастер на все руки —","Гипс закрутил, белый как муки.","Пальчики в пыли — хоть картину пиши.","Кристина смеётся: «Смотри, я в броне!","Два пальца вверх — победа вполне!»","Ахмед хохочет, Лёша тоже рад:","«Яж тебе говорил… но ты — молодец!»"] },
+        { n:7, title:"Яж тебе говорил", image:"book/g7.jpg", audio:"book/audio/ch7.mp3",
+          lines:["А мораль у сказки простая, друзья:","Слушай Лёшу — и стулья не зли.","Сорок четыре — не четыре,","Прыгать на стуле — затея лихая.","Ай-ай, пить нехорошо, вот так-то!","Гипс на руке — история смешная,","Да. Но лучше без гипса, куда!","Яж тебе говорил. Запомни. Всегда."] }
+      ];
+      const cover = { image: "book/cover.jpg", audio: "book/audio/cover.mp3" };
+      const audio = document.getElementById("audio");
+      const pageEl = document.getElementById("page");
+      let page = 0, playing = false, touchX = null;
+      function srcFor(p){ return p === 0 ? cover.audio : chapters[p-1].audio; }
+      function render(){
+        document.getElementById("prev").disabled = page === 0;
+        document.getElementById("next").disabled = page === 7;
+        document.getElementById("label").textContent = page === 0 ? "Обложка" : "Глава " + page + " из 7";
+        document.getElementById("play").textContent = playing ? "❚❚" : "▶";
+        if (page === 0) {
+          pageEl.innerHTML = '<div class="cover"><img src="'+cover.image+'" alt="Кристина прыгает на стул"><div class="shade"></div><div class="copy"><p class="kicker" style="color:#ead9b2">Детская сказка в рифме</p><h1>Яж тебе говорил</h1><p>Сказка про Кристину, стул и гипс</p><p style="opacity:.85">Почти сорок четыре и ни капли тише</p><div class="actions"><button class="brick" id="read">Читать</button><button id="listen">Слушать</button></div></div></div>';
+          document.getElementById("read").onclick = function(){ go(1); };
+          document.getElementById("listen").onclick = function(){ play(); };
+        } else {
+          var c = chapters[page-1];
+          pageEl.innerHTML = '<img src="'+c.image+'" alt=""><div class="verse"><p class="kicker">Глава '+c.n+'</p><h2>'+c.title+'</h2><div class="lines">'+c.lines.map(function(l){return "<p>"+l+"</p>";}).join("")+"</div></div>";
+        }
+        var nextSrc = srcFor(page);
+        if (audio.getAttribute("src") !== nextSrc) {
+          audio.src = nextSrc;
+          if (playing) audio.play();
+        }
+      }
+      function go(n){ page = Math.max(0, Math.min(7, n)); render(); }
+      function play(){
+        playing = true;
+        if (audio.getAttribute("src") !== srcFor(page)) audio.src = srcFor(page);
+        audio.play();
+        render();
+      }
+      function pause(){ playing = false; audio.pause(); render(); }
+      document.getElementById("play").onclick = function(){ playing ? pause() : play(); };
+      document.getElementById("prev").onclick = function(){ go(page-1); };
+      document.getElementById("next").onclick = function(){ go(page+1); };
+      document.getElementById("tocBtn").onclick = function(){
+        var list = ['<button class="row'+(page===0?' on':'')+'" data-p="0">Обложка</button>'];
+        chapters.forEach(function(c){ list.push('<button class="row'+(page===c.n?' on':'')+'" data-p="'+c.n+'">'+c.title+'<span>'+c.n+'</span></button>'); });
+        document.getElementById("tocList").innerHTML = list.join("");
+        document.getElementById("toc").showModal();
+      };
+      document.getElementById("tocList").addEventListener("click", function(e){
+        var b = e.target.closest("button[data-p]");
+        if (!b) return;
+        go(Number(b.dataset.p));
+        document.getElementById("toc").close();
+      });
+      audio.ontimeupdate = function(){ if (audio.duration) document.getElementById("prog").style.width = (100*audio.currentTime/audio.duration)+"%"; };
+      audio.onended = function(){ if (page < 7) go(page+1); else pause(); };
+      document.addEventListener("keydown", function(e){
+        if (e.key === "ArrowRight") go(page+1);
+        if (e.key === "ArrowLeft") go(page-1);
+        if (e.key === " ") { e.preventDefault(); playing ? pause() : play(); }
+      });
+      var book = document.getElementById("book");
+      book.addEventListener("touchstart", function(e){ touchX = e.changedTouches[0].clientX; }, {passive:true});
+      book.addEventListener("touchend", function(e){
+        if (touchX == null) return;
+        var dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+        if (Math.abs(dx) < 48) return;
+        if (dx < 0) go(page+1); else go(page-1);
+      });
+      render();
+    </script>
+  </body>
+</html>

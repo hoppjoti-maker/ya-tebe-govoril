@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Яж тебе говорил">
+  <rect width="32" height="32" rx="6" fill="#F6ECD4"/>
+  <g transform="rotate(-8 16 17)">
+    <rect x="10" y="4.5" width="3.4" height="12.2" rx="1.1" fill="#2C2118"/>
+    <rect x="18.6" y="4.5" width="3.4" height="12.2" rx="1.1" fill="#2C2118"/>
+    <rect x="10" y="4.5" width="12" height="3" rx="1.1" fill="#2C2118"/>
+    <rect x="10" y="10" width="12" height="2.4" rx="0.9" fill="#5E6B3E"/>
+    <rect x="7.6" y="15.6" width="16.8" height="4.4" rx="1.3" fill="#B3392B"/>
+    <rect x="7.8" y="19.6" width="3.4" height="7.8" rx="1.1" fill="#2C2118"/>
+    <rect x="20.8" y="19.6" width="3.4" height="7.8" rx="1.1" fill="#2C2118"/>
+    <rect x="11.2" y="19.6" width="2.8" height="5.6" rx="0.9" fill="#2C2118"/>
+    <rect x="18" y="19.6" width="2.8" height="5.6" rx="0.9" fill="#2C2118"/>
+  </g>
+</svg>
